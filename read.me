@@ -1,3 +1,20 @@
+构建并启动容器：
+
+bash
+docker-compose up -d --build
+手动初始化应用：
+
+bash
+# 进入容器
+docker exec -it v2board-php bash
+
+# 在容器内执行（首次需要）
+php artisan migrate --force
+
+# 退出容器
+exit
+
+
 关键特性
 按需初始化：
 
