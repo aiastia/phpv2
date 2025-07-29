@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  v2board-php:
+    build: .
+    container_name: v2board-php
+    volumes:
+      # 挂载到您现有的1Panel网站目录
+      - /opt/1panel/www/sites/v2b.aiastia.com:/var/www/html
+    environment:
+      # 连接您已有的MySQL服务
+      DB_HOST: your_mysql_host  # 替换为实际IP/域名
+      DB_DATABASE: your_db_name # 替换为实际数据库名
+      DB_USERNAME: your_db_user # 替换为实际用户名
+      DB_PASSWORD: your_db_pass # 替换为实际密码
+      
+      # 连接您已有的Redis服务
+      REDIS_HOST: your_redis_host # 替换为实际IP/域名
+      REDIS_PASSWORD: your_redis_pass # 如果有密码
+      
+      # 您的站点URL
+      APP_URL: https://v2b.aiastia.com
+    ports:
+      - "9000:9000"  # 暴露PHP-FPM端口
+    restart: unless-stopped
