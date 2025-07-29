@@ -1,0 +1,83 @@
+关键特性
+按需初始化：
+
+使用initialized标记文件控制初始化流程
+
+首次启动自动克隆代码并安装依赖
+
+后续启动跳过初始化
+
+队列管理：
+
+Supervisor同时管理PHP-FPM和Horizon队列
+
+自动重启崩溃的进程
+
+日志输出到标准流便于调试
+
+定时任务：
+
+每分钟执行schedule:run
+
+通过cron服务可靠执行
+
+与现有服务集成：
+
+通过环境变量连接外部MySQL和Redis
+
+挂载到现有1Panel网站目录
+
+暴露9000端口供Nginx连接
+
+管理命令
+查看队列状态：
+
+bash
+docker exec v2board-php php artisan horizon:status
+查看服务日志：
+
+bash
+docker logs -f v2board-php
+手动触发初始化：
+
+bash
+docker exec v2board-php rm /var/www/html/initialized
+docker restart v2board-php
+更新应用：
+
+bash
+# 进入容器
+docker exec -it v2board-php bash
+
+# 更新代码
+git pull
+composer install --no-dev
+php artisan migrate --force
+
+# 重启队列
+php artisan horizon:terminate
+注意事项
+网络连接：
+
+确保PHP容器可以访问MySQL和Redis服务
+
+如果服务在不同主机，检查防火墙设置
+
+文件权限：
+
+1Panel目录权限应与容器内用户匹配
+
+可添加权限修复命令到entrypoint.sh：
+
+bash
+chown -R www-data:www-data /var/www/html/storage
+chown -R www-data:www-data /var/www/html/bootstrap/cache
+性能优化：
+
+增加PHP OPcache配置
+
+调整Supervisor进程数
+
+配置Horizon监控
+
+这个方案完全独立于1Panel的PHP环境，同时与您现有的基础设施无缝集成，提供了灵活的应用部署和管理方式。
